@@ -1,4 +1,5 @@
 @ECHO OFF
+REM Created by 'Jai the Fox' 2020
 
 
 REM Set up some variables here
@@ -100,6 +101,8 @@ CALL :FUNC_COMPACT %COMPACT_PARAMETERS% "%BAT_USER_CHOICE%" %COMPACT_COMPRESSION
 SET COMPACT_PARAMETERS=
 SET COMPACT_COMPRESSION=
 ECHO.
+ECHO Note... Any files that get written to will lose their compressed state.
+ECHO For example: if game files are updated, you'll need to recompress them.
 PAUSE
 GOTO MENU_MAIN
 
