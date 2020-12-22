@@ -52,32 +52,33 @@ EXIT /B
 
 REM Displays the compress options menu
 :MENU_COMPRESSOPTS
-SET COMPACT_PARAMETERS="/C /A /I /Q /EXE:!COMPACT_COMPRESSION! !COMPACT_FILENAME!"
+SET COMPACT_PARAMETERS="/C /A /I /EXE:!COMPACT_COMPRESSION! !COMPACT_FILENAME!"
 CLS
 CALL :FUNC_DISPLAY_HEADER
-ECHO Do you want COMPACT to recursively query all subdirectories?
+ECHO Do you want COMPACT to recursively compress all subdirectories?
 SET COMPACT_SUBDIRECTORIES=
-SET BAT_USER_CHOICE=n
-SET /P BAT_USER_CHOICE="Yes / No (Y/N)? "
+SET BAT_USER_CHOICE=y
+SET /P BAT_USER_CHOICE="Yes / No (Y/N) [Y]? "
 IF /I "%BAT_USER_CHOICE%"=="y" SET COMPACT_SUBDIRECTORIES=1
 ECHO.
 ECHO Do you want COMPACT to force compression ^& recompress compressed files?
+ECHO If you want to skip over already compressed files, just press Enter to input the default 'N'
 SET COMPACT_FORCE=
 SET BAT_USER_CHOICE=n
-SET /P BAT_USER_CHOICE="Yes / No (Y/N)? "
+SET /P BAT_USER_CHOICE="Yes / No (Y/N) [N]? "
 IF /I "%BAT_USER_CHOICE%"=="y" SET COMPACT_FORCE=1
 IF DEFINED COMPACT_SUBDIRECTORIES (
     IF DEFINED COMPACT_FORCE (
-        SET COMPACT_PARAMETERS="/C /S /A /I /F /Q /EXE:!COMPACT_COMPRESSION! !COMPACT_FILENAME!"
+        SET COMPACT_PARAMETERS="/C /S /A /I /F /EXE:!COMPACT_COMPRESSION! !COMPACT_FILENAME!"
         SET COMPACT_SUBDIRECTORIES=
         SET COMPACT_FORCE=
     ) ELSE (
-        SET COMPACT_PARAMETERS="/C /S /A /I /Q /EXE:!COMPACT_COMPRESSION! !COMPACT_FILENAME!"
+        SET COMPACT_PARAMETERS="/C /S /A /I /EXE:!COMPACT_COMPRESSION! !COMPACT_FILENAME!"
         SET COMPACT_SUBDIRECTORIES=
     )
 )
 IF DEFINED COMPACT_FORCE (
-    SET COMPACT_PARAMETERS="/C /A /I /F /Q /EXE:!COMPACT_COMPRESSION! !COMPACT_FILENAME!"
+    SET COMPACT_PARAMETERS="/C /A /I /F /EXE:!COMPACT_COMPRESSION! !COMPACT_FILENAME!"
     SET COMPACT_FORCE=
 )
 ECHO.
@@ -91,7 +92,7 @@ IF /I "%BAT_USER_CHOICE%"=="xpress16k" SET COMPACT_COMPRESSION="XPRESS16K"
 IF /I "%BAT_USER_CHOICE%"=="lzx" SET COMPACT_COMPRESSION="LZX"
 ECHO.
 SET BAT_USER_CHOICE=
-SET /P BAT_USER_CHOICE="Optionally enter a file/folder name or pattern (multiple allowed): "
+SET /P BAT_USER_CHOICE="OPTIONALLY enter a file/folder name or pattern (multiple allowed): "
 ECHO.
 ECHO Compressing using COMPACT...
 ECHO ============================
@@ -101,8 +102,8 @@ CALL :FUNC_COMPACT %COMPACT_PARAMETERS% "%BAT_USER_CHOICE%" %COMPACT_COMPRESSION
 SET COMPACT_PARAMETERS=
 SET COMPACT_COMPRESSION=
 ECHO.
-ECHO Note... Any files that get written to will lose their compressed state.
-ECHO For example: if game files are updated, you'll need to recompress them.
+ECHO Note! Any files that get written to will lose their compressed state.
+ECHO For example: if game files are updated, you'll need to recompress them with COMPACT again.
 PAUSE
 GOTO MENU_MAIN
 
@@ -115,7 +116,7 @@ ECHO Current working directory: '%BAT_CWD%'
 ECHO.
 ECHO.
 SET BAT_USER_CHOICE=n
-SET /P BAT_USER_CHOICE="Compress (Y/N)? "
+SET /P BAT_USER_CHOICE="Compress (Y/N) [N]? "
 IF /I "%BAT_USER_CHOICE%"=="y" GOTO MENU_COMPRESSOPTS
 IF /I "%BAT_USER_CHOICE%"=="n" GOTO MENU_MAIN
 ECHO %BAT_USER_CHOICE%
@@ -123,21 +124,21 @@ GOTO MENU_COMPRESS
 
 REM Displays the uncompress options menu
 :MENU_UNCOMPRESSOPTS
-SET COMPACT_PARAMETERS="/U /A /I /Q /EXE !COMPACT_FILENAME!"
+SET COMPACT_PARAMETERS="/U /A /I /EXE !COMPACT_FILENAME!"
 CLS
 CALL :FUNC_DISPLAY_HEADER
-ECHO Do you want COMPACT to recursively query all subdirectories?
+ECHO Do you want COMPACT to recursively uncompress all subdirectories?
 SET COMPACT_SUBDIRECTORIES=
-SET BAT_USER_CHOICE=n
-SET /P BAT_USER_CHOICE="Yes / No (Y/N)? "
+SET BAT_USER_CHOICE=y
+SET /P BAT_USER_CHOICE="Yes / No (Y/N) [Y]? "
 IF /I "%BAT_USER_CHOICE%"=="y" SET COMPACT_SUBDIRECTORIES=1
 IF DEFINED COMPACT_SUBDIRECTORIES (
-    SET COMPACT_PARAMETERS="/U /S /A /I /Q /EXE !COMPACT_FILENAME!"
+    SET COMPACT_PARAMETERS="/U /S /A /I /EXE !COMPACT_FILENAME!"
     SET COMPACT_SUBDIRECTORIES=
 )
 ECHO.
 SET BAT_USER_CHOICE=
-SET /P BAT_USER_CHOICE="Optionally enter a file/folder name or pattern (multiple allowed): "
+SET /P BAT_USER_CHOICE="OPTIONALLY enter a file/folder name or pattern (multiple allowed): "
 ECHO.
 ECHO Uncompressing using COMPACT...
 ECHO ==============================
@@ -158,7 +159,7 @@ ECHO Current working directory: '%BAT_CWD%'
 ECHO.
 ECHO.
 SET BAT_USER_CHOICE=n
-SET /P BAT_USER_CHOICE="Uncompress (Y/N)? "
+SET /P BAT_USER_CHOICE="Uncompress (Y/N) [N]? "
 IF /I "%BAT_USER_CHOICE%"=="y" GOTO MENU_UNCOMPRESSOPTS
 IF /I "%BAT_USER_CHOICE%"=="n" GOTO MENU_MAIN
 ECHO %BAT_USER_CHOICE%
