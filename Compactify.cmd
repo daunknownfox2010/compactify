@@ -7,11 +7,13 @@ SET BAT_CWD=
 SET BAT_USER_CHOICE=
 
 
-REM Cancel out the script if we don't find compact.exe
-IF NOT EXIST "%SystemRoot%\System32\compact.exe" (
+REM Cancel out the script if we aren't using Windows 10
+IF NOT EXIST "%SystemRoot%\System32\tar.exe" (
     COLOR 04
-    ECHO Warning: COMPACT was not found in the system root directory.
-    ECHO Make sure you're using a full Windows 10 install.
+    ECHO ERROR!
+    ECHO.
+    ECHO You aren't using a valid Windows system.
+    ECHO Make sure you're using the latest Windows 10 builds.
     TIMEOUT /T -1 2>&1 >NUL
     GOTO EOF
 )
@@ -83,11 +85,14 @@ IF DEFINED COMPACT_FORCE (
 )
 ECHO.
 ECHO What compression do you want COMPACT to use?
-ECHO Reminder! [LZX] has heavy overhead, it's recommended you use [XPRESS16K] instead.
-SET COMPACT_COMPRESSION="XPRESS4K"
-SET BAT_USER_CHOICE=xpress4k
-SET /P BAT_USER_CHOICE="Compression (XPRESS4K/XPRESS8K/XPRESS16K/LZX) [XPRESS4K]: "
-IF /I "%BAT_USER_CHOICE%"=="xpress8k" SET COMPACT_COMPRESSION="XPRESS8K"
+ECHO   [XPRESS4K] Fastest, less compression
+ECHO   [XPRESS8K] Balanced, fast ^& adequate compression
+ECHO   [XPRESS16K] Slow, more compression with no additional overhead
+ECHO   [LZX] Slowest, more compression with additional overhead
+SET COMPACT_COMPRESSION="XPRESS8K"
+SET BAT_USER_CHOICE=xpress8k
+SET /P BAT_USER_CHOICE="Compression (XPRESS4K/XPRESS8K/XPRESS16K/LZX) [XPRESS8K]: "
+IF /I "%BAT_USER_CHOICE%"=="xpress4k" SET COMPACT_COMPRESSION="XPRESS4K"
 IF /I "%BAT_USER_CHOICE%"=="xpress16k" SET COMPACT_COMPRESSION="XPRESS16K"
 IF /I "%BAT_USER_CHOICE%"=="lzx" SET COMPACT_COMPRESSION="LZX"
 ECHO.
@@ -102,8 +107,8 @@ CALL :FUNC_COMPACT %COMPACT_PARAMETERS% "%BAT_USER_CHOICE%" %COMPACT_COMPRESSION
 SET COMPACT_PARAMETERS=
 SET COMPACT_COMPRESSION=
 ECHO.
-ECHO Note! Any files that get written to will lose their compressed state.
-ECHO For example: if game files are updated, you'll need to recompress them with COMPACT again.
+ECHO Note! Any files that get saved/written to will lose their compressed state.
+ECHO For example: if compressed game files are updated, you'll need to recompress them with COMPACT again.
 PAUSE
 GOTO MENU_MAIN
 
@@ -119,7 +124,6 @@ SET BAT_USER_CHOICE=n
 SET /P BAT_USER_CHOICE="Compress (Y/N) [N]? "
 IF /I "%BAT_USER_CHOICE%"=="y" GOTO MENU_COMPRESSOPTS
 IF /I "%BAT_USER_CHOICE%"=="n" GOTO MENU_MAIN
-ECHO %BAT_USER_CHOICE%
 GOTO MENU_COMPRESS
 
 REM Displays the uncompress options menu
@@ -146,7 +150,6 @@ ECHO.
 ECHO.
 CALL :FUNC_COMPACT %COMPACT_PARAMETERS% "%BAT_USER_CHOICE%"
 SET COMPACT_PARAMETERS=
-ECHO.
 PAUSE
 GOTO MENU_MAIN
 
@@ -162,7 +165,6 @@ SET BAT_USER_CHOICE=n
 SET /P BAT_USER_CHOICE="Uncompress (Y/N) [N]? "
 IF /I "%BAT_USER_CHOICE%"=="y" GOTO MENU_UNCOMPRESSOPTS
 IF /I "%BAT_USER_CHOICE%"=="n" GOTO MENU_MAIN
-ECHO %BAT_USER_CHOICE%
 GOTO MENU_UNCOMPRESS
 
 REM Displays the query menu
